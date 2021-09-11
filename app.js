@@ -1,14 +1,13 @@
 const express =  require("express")
-
+const ejs = require("ejs")
 const app = express();
+const pageRoute = require("./routes/pageRoute")
 
-app.get("/",(req,res)=>{
-	const photo = {
-		"name":"proje 1",
-		"description":"description"
-	}
-	res.send(photo)
-})
+app.set("view engine","ejs")
+app.use(express.static("public"))
+
+//Routes
+app.get("/",pageRoute);
 
 const PORT  = 3000;
 app.listen(PORT,()=>{
