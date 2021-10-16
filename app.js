@@ -5,6 +5,7 @@ const methodOverride = require('method-override');
 const fileUpload = require('express-fileUpload');
 const app = express();
 const pageRoute = require("./routes/pageRoute")
+const photoRoute = require("./routes/photoRoute")
 
 //mongoose
 mongoose.connect("mongodb://localhost/pcat-db",{
@@ -25,7 +26,8 @@ app.set("view engine","ejs")
 app.use(express.static("public"))
 
 //Routes
-app.get("/",pageRoute);
+app.use("/",pageRoute);
+app.use("/photos",photoRoute);
 
 const PORT  = 3000;
 app.listen(PORT,()=>{

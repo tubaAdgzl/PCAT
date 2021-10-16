@@ -1,20 +1,22 @@
+const fs = require('fs');
 const Photo = require("../models/Photo")
 
-exprots.getAllPhotos = async (req,res)=>{
-	const page = req.query.page || 1
-	const photosPerPage = 1
-	const totalPhotos = await Photo.find().countDocuments()
-
-	const photos = await Photo.find({})
-	.sort("-createdAt")
-	.skip((page-1)*photosPerPage)
-	.limit(photosPerPage)
-	res.status(200).render("index",{
-		photos,
-		current:page,
-		pages:(totalPhotos / photosPerPage)
-	});
+exports.getAllPhotos = async (req,res) =>{
+    const page = req.query.page || 1
+    const photosPerPage = 1
+    const totalPhotos = await Photo.find().countDocuments()
+    
+    const photos = await Photo.find({})
+    .sort("-createdAt")
+    .skip((page-1)*photosPerPage)
+    .limit(photosPerPage)
+    res.render('index', {
+      photos:photos,
+      current:page,
+      pages:(totalPhotos / photosPerPage)
+    });
 }
+
 
 exports.getPhoto =  async (req, res) => {
     const photo = await Photo.findById(req.params.id)
@@ -42,19 +44,19 @@ exports.createPhoto = async (req, res) => {
     });
   }
 
-  exports.updatePhoto = async (req,res)=>{
-  	const photo = await Photo.findOne({_id:req.params.id})
-  	photo.title  = req.body.title
-  	photo.description = req.body.description
-  	photo.save()
-
-  	res.status(200).redirect(`/photos/${req.params.id}`)
+ exports.updatePhoto = async (req,res) =>{
+    const  photo = await Photo.findOne({_id:req.params.id})
+    photo.title=req.body.title
+    photo.description=req.body.description
+    photo.save()
+  
+    res.status(200).redirect(`/photos/${req.params.id}`)
   }
 
- exports.deletePhoto = async (req,res) =>{
- 	const photo = await Photo.findOne({_id:req.params.id})
- 	let deletedImage = __dirname + '/../public' + photo.image
- 	fs.unlinkSync(deletedImage)
- 	await Photo.findByIdAndRemove(req.params.id)
- 	res.status(200).redirect("/")
+ exports.deletePhoto = async (req, res) => {
+    const photo = await Photo.findOne({ _id: req.params.id });
+    let deletedImage = __dirname + '/../public' + photo.image;
+    fs.unlinkSync(deletedImage);
+    await Photo.findByIdAndRemove(req.params.id);
+    res.redirect('/');
   }
